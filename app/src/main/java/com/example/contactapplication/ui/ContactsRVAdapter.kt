@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.contactapplication.models.Contacts
+import com.example.contactapplication.ui.CotactDetailsActivity
+import com.example.contactapplication.ui.MainActivity
 import com.squareup.picasso.Picasso
 
-class ContactsRVAdapter (var contactList: List<Contacts>,var context: Context):RecyclerView.Adapter<ContactViewHolder>() {
+class ContactsRVAdapter(var contactList: List<Contacts>, var context: Context, var contactClickListener:MainActivity.ContactClickListener):RecyclerView.Adapter<ContactViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         var itemView=LayoutInflater.from(parent.context)
             .inflate(R.layout.contact_list,parent,false)   //If an item is clicked it registers for the specific item
@@ -25,15 +27,16 @@ class ContactsRVAdapter (var contactList: List<Contacts>,var context: Context):R
         holder.tvName.text=currentContact.name
         holder.tvPhone.text=currentContact.phone
         holder.tvEmail.text=currentContact.email
-        Picasso.get()
-            .load(currentContact.imageUrl)
-            .resize(80,80)
-            .centerCrop()
+        if (currentContact.imageUrl.isNotEmpty()) {
+            Picasso.get()
+                .load(currentContact.imageUrl)
+                .resize(80, 80)
+                .centerCrop()
 //            .placeholder(R.drawable.placeholder)
-            .into(holder.ivContact)
-
+                .into(holder.ivContact)
+        }
         holder.cvContact.setOnClickListener {
-            var intent=Intent(context,CotactDetailsActivity::class.java)
+            var intent=Intent(context, CotactDetailsActivity::class.java)
             intent.putExtra("NAME",currentContact.name)
             intent.putExtra("PHONE",currentContact.phone)
             intent.putExtra("EMAIL",currentContact.email)
@@ -42,11 +45,15 @@ class ContactsRVAdapter (var contactList: List<Contacts>,var context: Context):R
             context.startActivity(intent)
 
         }
+        holder.ivDeleteContact.setOnClickListener {
+            contactClickListener.onClickDeleteContact(currentContact)
+        }
         holder.ivContact
 //        holder.ivContact.setOnClickListener {
 //            Toast.makeText(context,"You have clicked on my face",Toast.LENGTH_LONG).show()
 //        }
     }
+
     override fun getItemCount(): Int {
         return contactList.size
     }
@@ -57,4 +64,5 @@ class ContactViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
     var tvEmail=itemView.findViewById<TextView>(R.id.tvEmail)
     var ivContact=itemView.findViewById<ImageView>(R.id.ivContact)
     var cvContact=itemView.findViewById<CardView>(R.id.cvContact)
+    var ivDeleteContact=itemView.findViewById<ImageView>(R.id.ivDeleteContact)
 }

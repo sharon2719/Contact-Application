@@ -1,11 +1,10 @@
-package com.example.contactapplication
+package com.example.contactapplication.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import com.example.contactapplication.R
 import com.squareup.picasso.Picasso
 
 class CotactDetailsActivity : AppCompatActivity() {
